@@ -68,14 +68,14 @@ function createSudokuBoard(board) {
 
     for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
-            const cell = document.createElement('div');
+            const cell = document.createElement('img');
             cell.dataset.row = row;
             cell.dataset.col = col;
-            cell.textContent = board[row][col] === 0 ? '' : board[row][col];
+            cell.src = board[row][col] === 0 ? 'resources/0.png' : 'resources/' + board[row][col] + '.png';
             cell.classList.add(board[row][col] === 0 ? 'empty' : 'filled');
             cell.addEventListener('click', () => {
                 if (selectedNumber && cell.classList.contains('empty')) {
-                    cell.textContent = selectedNumber;
+                    cell.src = selectedNumber;
                 }
             });
             boardContainer.appendChild(cell);
@@ -85,12 +85,15 @@ function createSudokuBoard(board) {
 
 function getBoardFromInputs() {
     const board = [];
-    const cells = document.querySelectorAll('#sudoku-board div');
+    const regex = /\/(\d)\.png/;
+    const cells = document.querySelectorAll('#sudoku-board img');
     for (let row = 0; row < 9; row++) {
         const rowArray = [];
         for (let col = 0; col < 9; col++) {
-            const value = cells[row * 9 + col].textContent;
-            rowArray.push(value === '' ? 0 : parseInt(value, 10));
+            const src = cells[row * 9 + col].src;
+            const match = src.match(regex);
+            const value = match ? match[1] : null;
+            rowArray.push(value === '0' ? 0 : parseInt(value, 10));
         }
         board.push(rowArray);
     }
@@ -98,17 +101,17 @@ function getBoardFromInputs() {
 }
 
 function fillSudokuBoard(board) {
-    const cells = document.querySelectorAll('#sudoku-board div');
+    const cells = document.querySelectorAll('#sudoku-board img');
     for (let row = 0; row < 9; row++) {
         for (let col = 0; col < 9; col++) {
-            cells[row * 9 + col].textContent = board[row][col] === 0 ? '' : board[row][col];
+            cells[row * 9 + col].src = board[row][col] === 0 ? 'resources/0.png' : 'resources/' + board[row][col] + '.png';
         }
     }
 }
 
-document.querySelectorAll('.number-btn').forEach(button => {
-    button.addEventListener('click', () => {
-        selectedNumber = button.textContent;
+document.querySelectorAll('.number-btn').forEach(img => {
+    img.addEventListener('click', () => {
+        selectedNumber = img.src;
     });
 });
 
